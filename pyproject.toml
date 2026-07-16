@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dataforge-ai"
+version = "0.1.0"
+description = "Production ML agent that watches the DataHub lineage graph, detects silent failures, and writes incidents back so downstream agents inherit the context."
+readme = "README.md"
+requires-python = "3.10"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Cubiczan / Icohangar-Ops" }
+]
+keywords = ["datahub", "ml-observability", "data-lineage", "incident-management", "mcp", "agents"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "acryl-datahub>=0.13.0",
+    "acryl-datahub[datahub-rest]>=0.13.0",
+    "httpx>=0.27",
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+    "openai>=1.30",
+    "tenacity>=8.2",
+    "rich>=13.7",
+    "typer>=0.12",
+    "scipy>=1.11",
+    "numpy>=1.26",
+    "pandas>=2.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.4",
+    "mypy>=1.10",
+    "respx>=0.21",
+]
+mcp = [
+    "mcp>=0.0.30",
+    "datahub-mcp-server>=0.0.1",
+]
+anthropic = ["anthropic>=0.25"]
+ollama = ["ollama>=0.2"]
+
+[project.scripts]
+dataforge = "dataforge.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true

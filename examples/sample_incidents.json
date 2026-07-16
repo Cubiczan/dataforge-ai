@@ -1,0 +1,49 @@
+{
+  "version": "0.1.0",
+  "description": "Sample incidents DataForge AI writes back to the DataHub lineage graph. Each entry mirrors the DataHubIncidentProperties aspect shape so downstream consumers can parse them.",
+  "incidents": [
+    {
+      "target_urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,nyc_taxi.rides,PROD)",
+      "type": "freshness_drop",
+      "severity": "WARN",
+      "title": "Freshness SLA violation: nyc_taxi.rides is 38.4h old",
+      "description": "Dataset urn:li:dataset:(urn:li:dataPlatform:dbt,nyc_taxi.rides,PROD) has not been updated for 38.4 hours, exceeding the configured SLA of 24h. Downstream ML models trained on this dataset will silently degrade.",
+      "evidence": {
+        "last_modified_ms": 1752624000000,
+        "age_hours": 38.4,
+        "sla_hours": 24
+      },
+      "suggested_resolution": "Investigate the upstream pipeline (Airflow / Spark job). Common causes: (1) source system outage, (2) scheduler paused, (3) silent job failure."
+    },
+    {
+      "target_urn": "urn:li:dataset:(urn:li:dataPlatform:dbt,nyc_taxi.rides,PROD)",
+      "type": "schema_drift",
+      "severity": "CRITICAL",
+      "title": "Schema drift detected on nyc_taxi.rides",
+      "description": "Dataset schema changed since last observation. Removed fields: vendor_id, trip_type. Retyped fields: payment_type. Downstream feature pipelines and ML models depending on this dataset must be re-evaluated.",
+      "evidence": {
+        "added": [],
+        "removed": ["vendor_id", "trip_type"],
+        "retyped": ["payment_type"]
+      },
+      "suggested_resolution": "Removed/retyped fields are high-risk. Block model deployments trained on the prior schema and trigger a retrain."
+    },
+    {
+      "target_urn": "urn:li:mlFeature:critmin.sentiment_polarity",
+      "type": "distribution_shift",
+      "severity": "CRITICAL",
+      "title": "Feature distribution shift on critmin.sentiment_polarity (PSI=0.412)",
+      "description": "Feature critmin.sentiment_polarity shows statistical drift from its reference distribution. PSI=0.412 (threshold=0.20), KS p-value=0.0012 (threshold=0.05). This suggests the upstream data-generating process has changed; models trained on the prior distribution may produce unreliable predictions.",
+      "evidence": {
+        "psi": 0.4123,
+        "ks_statistic": 0.234,
+        "ks_pvalue": 0.0012,
+        "n_reference": 100,
+        "n_current": 100,
+        "mean_reference": 0.21,
+        "mean_current": -0.34
+      },
+      "suggested_resolution": "If the shift is expected (e.g. business seasonality): refresh the reference distribution and bump the model schema version. If unexpected: investigate the source pipeline for upstream bugs, then retrain + re-validate the model before serving traffic."
+    }
+  ]
+}
