@@ -7,7 +7,7 @@ name = "dataforge-ai"
 version = "0.1.0"
 description = "Production ML agent that watches the DataHub lineage graph, detects silent failures, and writes incidents back so downstream agents inherit the context."
 readme = "README.md"
-requires-python = "3.10"
+requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 authors = [
     { name = "Cubiczan / Icohangar-Ops" }
@@ -47,7 +47,7 @@ dev = [
 ]
 mcp = [
     "mcp>=0.0.30",
-    "datahub-mcp-server>=0.0.1",
+    "mcp-server-datahub>=0.0.1",
 ]
 anthropic = ["anthropic>=0.25"]
 ollama = ["ollama>=0.2"]
