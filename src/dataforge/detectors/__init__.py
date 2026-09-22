@@ -30,6 +30,10 @@ class Finding:
     description: str
     evidence: dict[str, Any] = field(default_factory=dict)
     suggested_resolution: Optional[str] = None
+    run_id: Optional[str] = None
+    source_extract_hash: Optional[str] = None
+    schema_version: Optional[str] = None
+    owner: Optional[str] = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -40,5 +44,9 @@ class Finding:
             "description": self.description,
             "evidence": self.evidence,
             "suggested_resolution": self.suggested_resolution,
+            "run_id": self.run_id,
+            "source_extract_hash": self.source_extract_hash,
+            "schema_version": self.schema_version,
+            "owner": self.owner,
             "detected_at": datetime.now(timezone.utc).isoformat(),
         }

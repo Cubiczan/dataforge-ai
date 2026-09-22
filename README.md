@@ -94,6 +94,23 @@ distribution CRITICAL  urn:li:mlFeature:critmin.sentiment_polarity           Fea
 
 Each finding is wrapped in a `DataHubIncidentProperties` aspect and emitted back to DataHub via the official `acryl-datahub` emitter. The incident text is drafted by an LLM (OpenAI / Anthropic / Ollama) using the finding's structured evidence, so the on-call engineer gets both "what" and "next step".
 
+## Evidence and Remediation Controls
+
+Every scan can be grouped into an `EvidencePack` containing a run ID, source
+snapshot hashes, schema versions, findings and a deterministic input hash.
+Evidence is `ADVISORY` without an owner, `PROVISIONAL_LOCK` with an owner, and
+`HALT` when a critical finding exists. A named reviewer can move provisional
+evidence to `LOCKED` after verifying the remediation rationale.
+
+Incidents use an explicit lifecycle:
+
+```text
+OPEN -> ACKNOWLEDGED -> REMEDIATED -> VERIFIED
+```
+
+This keeps DataHub incident writes aligned with the downstream control-spine
+contract while leaving DataHub as the system of record.
+
 ---
 
 ## Why DataHub (the part judges care about)

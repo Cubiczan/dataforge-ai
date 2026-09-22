@@ -12,7 +12,14 @@ from __future__ import annotations
 __version__ = "0.1.0"
 
 from dataforge.config import Settings, get_settings
-from dataforge.datahub_client import DataHubClient
-from dataforge.agent import DataForgeAgent
+
+# Keep deterministic detectors and evidence contracts importable in minimal
+# environments; DataHub runtime dependencies are required only by the agent.
+try:  # pragma: no cover - depends on optional DataHub installation
+    from dataforge.datahub_client import DataHubClient
+    from dataforge.agent import DataForgeAgent
+except ImportError:  # pragma: no cover
+    DataHubClient = None  # type: ignore[assignment,misc]
+    DataForgeAgent = None  # type: ignore[assignment,misc]
 
 __all__ = ["__version__", "Settings", "get_settings", "DataHubClient", "DataForgeAgent"]
